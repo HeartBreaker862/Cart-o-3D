@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador Interativo de Planetas 3D</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Exo+2:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome (para ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Seu CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Scripts (Model Viewer e tsParticles ANTES do seu script.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js" defer></script>
+</head>
+<body>
+    <!-- LOADER ESPACIAL -->
+    <div id="loader-overlay">
+        <div id="tsparticles-background"></div>
+        <div id="helmet-visor" style="--visor-effective-height: 400px;">
+            <div class="scanline"></div>
+            <div class="visor-content">
+                <h2 id="loading-status-text">INICIALIZANDO SISTEMAS...</h2>
+                <div class="progress-bar-container">
+                    <div id="progress-bar-fill"></div>
+                </div>
+                <p id="loading-percentage">0%</p>
+                <div class="boot-sequence">
+                    <p class="boot-text active">ESTABELECENDO CONEXÃO...</p>
+                    <p class="boot-text">VERIFICANDO SUPORTE DE VIDA...</p>
+                    <p class="boot-text">CALIBRANDO SENSORES...</p>
+                    <p class="boot-text">CARREGANDO DADOS CELESTIAIS...</p>
+                    <p class="boot-text">SEQUÊNCIA DE BOOT CONCLUÍDA.</p>
+                </div>
+                <div class="visor-glare"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL DA PÁGINA -->
+    <header>
+        <h1>Explorador Interativo de Planetas 3D</h1>
+    </header>
+
+    <div class="main-content">
+        <div class="viewer-column">
+            <!-- ===== ÚNICA INSTÂNCIA DO MODEL-VIEWER PRINCIPAL ===== -->
+            <model-viewer
+                id="mainModelViewer"
+                src="earth.glb"
+                ios-src="earth.usdz" /* Atualize se tiver USDZ */
+                alt="Modelo 3D do Planeta Terra"
+                auto-rotate
+                camera-controls
+                ar
+                shadow-intensity="1"
+                environment-image="neutral"
+                exposure="1"
+                camera-orbit="0deg 75deg 2.5m"
+                min-camera-orbit="auto auto 500m"
+                max-camera-orbit="auto auto 500m"
+            >
+                <div slot="progress-bar" style="display: none;">Carregando...</div>
+            </model-viewer>
+
+            <!-- ===== ÚNICO CONJUNTO DE CONTROLES DO MODELO ===== -->
+            <div class="model-controls">
+                <button id="toggleRotationBtn" class="control-button"><i class="fas fa-pause"></i> Pausar Rotação</button>
+                <button id="resetCameraBtn" class="control-button"><i class="fas fa-camera-rotate"></i> Resetar Câmera</button>
+                <button id="fullscreenModelBtn" class="control-button"><i class="fas fa-expand"></i> Tela Cheia</button>
+            </div>
+
+            <!-- ===== ÚNICA ÁREA DE INFORMAÇÕES DO PLANETA ===== -->
+            <div class="planet-info-display" id="planetInfoContainer">
+                <h3 id="selectedPlanetName">Planeta Terra</h3>
+                <p class="key-fact" id="selectedPlanetKeyFact">O único planeta conhecido por abrigar vida.</p>
+                <p class="description" id="selectedPlanetDescription">Nosso planeta natal, a Terra, é um mundo vibrante com oceanos de água líquida, uma atmosfera rica em oxigênio e uma biodiversidade impressionante.</p>
+                <a href="#" id="learnMoreBtn" class="learn-more-btn">Saiba Mais Sobre <span id="learnMorePlanetName">Terra</span></a>
+            </div>
+        </div>
+
+        <div class="catalog-box">
+            <h2>Escolha um Planeta:</h2>
+            <div class="navigation-buttons">
+                <button id="prevPlanetBtn" class="nav-btn"><i class="fas fa-chevron-left"></i> Anterior</button>
+                <button id="nextPlanetBtn" class="nav-btn">Próximo <i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="catalog-items">
+                <!-- Item 1: Terra -->
+                <div class="catalog-item active"
+                     data-glb-src="earth.glb"
+                     data-usdz-src="earth.usdz" /* Atualize */
+                     data-alt="Modelo 3D do Planeta Terra"
+                     data-key-fact="O único planeta conhecido por abrigar vida."
+                     data-description="Nosso planeta natal, a Terra, é um mundo vibrante com oceanos de água líquida, uma atmosfera rica em oxigênio e uma biodiversidade impressionante.">
+                    <img src="terra.webp" alt="Miniatura Planeta Terra">
+                    <p class="planet-thumb-name">Terra</p>
+                </div>
+
+                <!-- Item 2: Marte -->
+                <div class="catalog-item"
+                     data-glb-src="mars.glb"
+                     data-usdz-src="mars.usdz" /* Atualize */
+                     data-alt="Modelo 3D do Planeta Marte"
+                     data-key-fact="Conhecido como o Planeta Vermelho devido ao óxido de ferro."
+                     data-description="Marte é um deserto frio e poeirento com uma atmosfera fina. Cientistas investigam se já abrigou vida e se poderia no futuro. Possui a maior montanha vulcânica do sistema solar, o Monte Olimpo.">
+                    <img src="Marte-1200x675.webp" alt="Miniatura Planeta Marte">
+                    <p class="planet-thumb-name">Marte</p>
+                </div>
+                 <!-- Item 3: Saturno -->
+                <div class="catalog-item"
+                     data-glb-src="saturn.glb" /* MUDADO DE SUN.GLB PARA SATURN.GLB */
+                     data-usdz-src="saturn.usdz" /* Atualize */
+                     data-alt="Modelo 3D do Planeta Saturno"
+                     data-key-fact="Conhecido por seus impressionantes anéis de gelo e rocha."
+                     data-description="Saturno é o segundo maior planeta e é adornado por um sistema de anéis espetacular. Assim como Júpiter, é um gigante gasoso com muitas luas, incluindo Titã, que possui uma atmosfera densa.">
+                    <img src="saturn.jpg" alt="Miniatura Planeta Saturno"> <!-- Adicione o caminho para thumb_saturn.jpg -->
+                    <p class="planet-thumb-name">Saturno</p>
+                </div>
+                <!-- Item 4: Mercúrio (Anteriormente era outro Saturno) -->
+                <div class="catalog-item"
+                     data-glb-src="mercury_enhanced_color.glb"
+                     data-usdz-src="mercury_enhanced_color.usdz" /* Atualize */
+                     data-alt="Modelo 3D do Planeta Mercúrio"
+                     data-key-fact="O menor planeta e o mais próximo do Sol."
+                     data-description="Mercúrio é um planeta rochoso com temperaturas extremas, muito quente durante o dia e muito frio à noite. Sua superfície é coberta de crateras, similar à da nossa Lua.">
+                    <img src="mercury.jpg" alt="Miniatura Planeta Mercúrio"> <!-- Adicione um thumb_mercury.jpg -->
+                    <p class="planet-thumb-name">Mercúrio</p>
+                </div>
+                <!-- Item 5: Sol -->
+                <div class="catalog-item"
+                     data-name="Shiba Inu"
+                     data-glb-src="sun.glb"
+                     data-usdz-src="shiba.usdz" 
+                     data-alt="Sol do Sistema Solar"
+                     data-key-fact="O explorador mais fofo da galáxia!"
+                     data-description="Quente e ardente, o sol é a maior estrela do nosso sistema solar, fornecendo energia e vida aos habitantes da terra.">
+                    <img src="sun.jpg" alt="Sol">
+                    <p class="planet-thumb-name">Sol</p>
+                </div>
+                <!-- Item 6: Shiba Inu -->
+                <div class="catalog-item"
+                     data-name="Shiba Inu"
+                     data-glb-src="shiba.glb"
+                     data-usdz-src="shiba.usdz" /* Atualize */
+                     data-alt="Modelo 3D de um cachorrinho Shiba Inu fofo"
+                     data-key-fact="O explorador mais fofo da galáxia!"
+                     data-description="Au! Au! Conheça o Shiba, pronto para farejar novas aventuras (e petiscos!). Este doguinho é pura alegria e lealdade. Prepare-se para uma sobrecarga de fofura espacial!">
+                    <img src="shibainu.webp" alt="Miniatura Cachorrinho Shiba Inu">
+                    <p class="planet-thumb-name">Shiba Inu</p>
+                </div>
+                <!-- Item 7: Shiba Inu -->
+                <div class="catalog-item"
+                     data-name="Lua"
+                     data-glb-src="moon.glb"
+                     data-usdz-src="" /* Atualize */
+                     data-alt="Modelo 3D de um cachorrinho Shiba Inu fofo"
+                     data-key-fact="O explorador mais fofo da galáxia!"
+                     data-description="Au! Au! Conheça o Shiba, pronto para farejar novas aventuras (e petiscos!). Este doguinho é pura alegria e lealdade. Prepare-se para uma sobrecarga de fofura espacial!">
+                    <img src="Lua-Cheia-Rosa.webp" alt="Miniatura Cachorrinho Shiba Inu">
+                    <p class="planet-thumb-name">Shiba Inu</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA TELA CHEIA -->
+    <div id="fullscreen-modal" class="fullscreen-modal-overlay hidden">
+        <div id="fullscreen-model-container">
+            <!-- O model-viewer com id="mainModelViewer" será movido para cá pelo JavaScript -->
+        </div>
+        <button id="closeFullscreenBtn" class="close-fullscreen-btn"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Seu JavaScript -->
+    <script src="script.js" defer></script>
+</body>
+</html>
